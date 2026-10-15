@@ -1,7 +1,10 @@
 package com.example.useinput
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -11,11 +14,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import java.lang.reflect.Modifier
 
 @Composable
-fun FormBiodata(modifier: Modifier = Modifier){
+fun FormBiodata(modifier: Modifier = Modifier) {
     // Form BIODATA
     var namaDepan by remember { mutableStateOf("") }
     var namaBelakang by remember { mutableStateOf("") }
@@ -46,8 +52,16 @@ fun FormBiodata(modifier: Modifier = Modifier){
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-        )
+        ) {
+            // 1. Gambar Latar Belakang (Header)
+            Image(
+                painter = painterResource(id = R.drawable.bg_header),
+                contentDescription = stringResource(id = R.string.desc_bg_header),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(280.dp),
+                contentScale = ContentScale.Crop
+            )
+        }
     }
-
-
 }
