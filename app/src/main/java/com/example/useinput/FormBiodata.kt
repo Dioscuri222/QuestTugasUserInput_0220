@@ -14,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,7 +25,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import java.lang.reflect.Modifier
 
 @Composable
@@ -85,7 +88,13 @@ fun FormBiodata(modifier: Modifier = Modifier) {
                         .padding(horizontal = 24.dp, vertical = 20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-
+                    // --- Judul & Subjudul ---
+                    Text(
+                        text = stringResource(id = R.string.title_form_biodata),
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colorResource(id = R.color.purple_title)
+                    )
                 }
             }
         }
