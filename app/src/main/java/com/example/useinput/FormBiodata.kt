@@ -3,6 +3,7 @@ package com.example.useinput
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -94,6 +95,14 @@ fun FormBiodata(modifier: Modifier = Modifier) {
                         fontSize = 28.sp,
                         fontWeight = FontWeight.Bold,
                         color = colorResource(id = R.color.purple_title)
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = stringResource(id = R.string.subtitle_form_biodata),
+                        fontSize = 13.sp,
+                        color = colorResource(id = R.color.text_subtitle_gray)
                     )
                 }
             }
