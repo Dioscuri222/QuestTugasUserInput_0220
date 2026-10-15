@@ -1,6 +1,8 @@
 package com.example.useinput
 
+import android.app.DatePickerDialog
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +21,10 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -35,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -43,10 +49,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 @Composable
 fun FormBiodata(modifier: Modifier = Modifier) {
-    // Form BIODATA
+    // --- STATE FORM BIODATA ---
     var namaDepan by remember { mutableStateOf("") }
     var namaBelakang by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -57,11 +64,47 @@ fun FormBiodata(modifier: Modifier = Modifier) {
     var isUiUxChecked by remember { mutableStateOf(false) }
     var isWebChecked by remember { mutableStateOf(false) }
 
-    // SNACKBAR STATE & COROUTINE
+    // --- NATIVE ANDROID DATE PICKER DIALOG ---
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+    val datePickerDialog = remember {
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                tglLahir = String.format("%02d/%02d/%d", dayOfMonth, month + 1, year)
+            },
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH),
+            calendar.get(Calendar.DAY_OF_MONTH)
+        )
+    }
+
+    // --- DROPDOWN STATE ---
+    var expandedExperience by remember { mutableStateOf(false) }
+    val experienceOptions = listOf(
+        stringResource(id = R.string.exp_fresh),
+        stringResource(id = R.string.exp_1_2),
+        stringResource(id = R.string.exp_3_5),
+        stringResource(id = R.string.exp_more_5)
+    )
+
+    // --- LOGIKA WARNA BUTTON BERDASARKAN RESOURCE COLOR ---
+    val isSkillSelected = isAndroidChecked || isUiUxChecked || isWebChecked
+    val btnBgColor = if (isSkillSelected) {
+        colorResource(id = R.color.btn_proceed_active_bg)
+    } else {
+        colorResource(id = R.color.btn_proceed_inactive_bg)
+    }
+    val btnTextColor = if (isSkillSelected) {
+        colorResource(id = R.color.btn_proceed_active_text)
+    } else {
+        colorResource(id = R.color.btn_proceed_inactive_text)
+    }
+
+    // --- SNACKBAR STATE & COROUTINE ---
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    // Template String untuk preview dari strings.xml
     val emptyDash = stringResource(id = R.string.empty_value)
     val androidSkill = stringResource(id = R.string.skill_android)
     val uiuxSkill = stringResource(id = R.string.skill_uiux)
@@ -77,7 +120,7 @@ fun FormBiodata(modifier: Modifier = Modifier) {
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            // 1. Gambar Latar Belakang (Header)
+            // 1. Gambar Latar Belakang
             Image(
                 painter = painterResource(id = R.drawable.bg_header),
                 contentDescription = stringResource(id = R.string.desc_bg_header),
@@ -87,7 +130,7 @@ fun FormBiodata(modifier: Modifier = Modifier) {
                 contentScale = ContentScale.Crop
             )
 
-            // 2. Card/Surface Form yang Mengapung (Floating) di atas Background
+            // 2. Card/Surface Form Mengapung
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
@@ -159,32 +202,72 @@ fun FormBiodata(modifier: Modifier = Modifier) {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        OutlinedTextField(
-                            value = tglLahir,
-                            onValueChange = { tglLahir = it },
-                            label = { Text(text = stringResource(id = R.string.label_tgl_lahir)) },
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.DateRange,
-                                    contentDescription = stringResource(id = R.string.desc_icon_calendar)
-                                )
-                            },
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(16.dp)
-                        )
-                        OutlinedTextField(
-                            value = experience,
-                            onValueChange = { experience = it },
-                            label = { Text(text = stringResource(id = R.string.label_experience)) },
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.ArrowDropDown,
-                                    contentDescription = stringResource(id = R.string.desc_icon_dropdown)
-                                )
-                            },
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(16.dp)
-                        )
+                        // Tgl Lahir
+                        Box(modifier = Modifier.weight(1f)) {
+                            OutlinedTextField(
+                                value = tglLahir,
+                                onValueChange = {},
+                                readOnly = true,
+                                label = { Text(text = stringResource(id = R.string.label_tgl_lahir)) },
+                                trailingIcon = {
+                                    IconButton(onClick = { datePickerDialog.show() }) {
+                                        Icon(
+                                            imageVector = Icons.Default.DateRange,
+                                            contentDescription = stringResource(id = R.string.desc_icon_calendar)
+                                        )
+                                    }
+                                },
+                                shape = RoundedCornerShape(16.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            // Overlay agar seluruh area kotak bisa diklik
+                            Box(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .clickable { datePickerDialog.show() }
+                            )
+                        }
+
+                        // Experience Dropdown
+                        Box(modifier = Modifier.weight(1f)) {
+                            OutlinedTextField(
+                                value = experience,
+                                onValueChange = {},
+                                readOnly = true,
+                                label = { Text(text = stringResource(id = R.string.label_experience)) },
+                                trailingIcon = {
+                                    IconButton(onClick = { expandedExperience = true }) {
+                                        Icon(
+                                            imageVector = Icons.Default.ArrowDropDown,
+                                            contentDescription = stringResource(id = R.string.desc_icon_dropdown)
+                                        )
+                                    }
+                                },
+                                shape = RoundedCornerShape(16.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            // Overlay agar seluruh area kotak bisa diklik
+                            Box(
+                                modifier = Modifier
+                                    .matchParentSize()
+                                    .clickable { expandedExperience = true }
+                            )
+
+                            DropdownMenu(
+                                expanded = expandedExperience,
+                                onDismissRequest = { expandedExperience = false }
+                            ) {
+                                experienceOptions.forEach { option ->
+                                    DropdownMenuItem(
+                                        text = { Text(text = option) },
+                                        onClick = {
+                                            experience = option
+                                            expandedExperience = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -244,10 +327,9 @@ fun FormBiodata(modifier: Modifier = Modifier) {
 
                     Spacer(modifier = Modifier.height(28.dp))
 
-                    // --- Tombol PROCEED dengan Fitur Snackbar 5 Detik ---
+                    // --- Tombol PROCEED ---
                     Button(
                         onClick = {
-                            // Mengumpulkan skill yang dipilih
                             val selectedSkillsList = mutableListOf<String>()
                             if (isAndroidChecked) selectedSkillsList.add(androidSkill)
                             if (isUiUxChecked) selectedSkillsList.add(uiuxSkill)
@@ -269,7 +351,6 @@ fun FormBiodata(modifier: Modifier = Modifier) {
                                 skillText
                             )
 
-                            // Tampilkan Snackbar selama tepat 5 detik
                             coroutineScope.launch {
                                 val snackbarJob = launch {
                                     snackbarHostState.showSnackbar(message = summaryMessage)
@@ -283,14 +364,14 @@ fun FormBiodata(modifier: Modifier = Modifier) {
                             .height(50.dp),
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = colorResource(id = R.color.btn_proceed_bg)
+                            containerColor = btnBgColor
                         )
                     ) {
                         Text(
                             text = stringResource(id = R.string.btn_proceed),
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = colorResource(id = R.color.btn_proceed_text)
+                            color = btnTextColor
                         )
                     }
                 }
