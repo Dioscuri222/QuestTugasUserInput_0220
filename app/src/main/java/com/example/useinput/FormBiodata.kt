@@ -1,5 +1,6 @@
 package com.example.useinput
 
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -31,4 +32,9 @@ fun FormBiodata(modifier: Modifier = Modifier){
     val uiuxSkill = stringResource(id = R.string.skill_uiux)
     val webSkill = stringResource(id = R.string.skill_web)
     val previewFormat = stringResource(id = R.string.preview_biodata)
+
+    Scaffold(
+    )
+
+
 }
