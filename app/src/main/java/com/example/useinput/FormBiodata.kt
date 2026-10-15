@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.res.stringResource
 import java.lang.reflect.Modifier
 
 @Composable
@@ -23,4 +24,9 @@ fun FormBiodata(modifier: Modifier = Modifier){
     // SNACKBAR STATE & COROUTINE
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+
+    // Template String untuk preview dari strings.xml
+    val emptyDash = stringResource(id = R.string.empty_value)
+    val androidSkill = stringResource(id = R.string.skill_android)
+    val uiuxSkill = stringResource(id = R.string.skill_uiux)
 }
