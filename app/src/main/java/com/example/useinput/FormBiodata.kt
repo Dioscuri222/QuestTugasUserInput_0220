@@ -13,6 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -33,6 +36,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.lang.reflect.Modifier
 
 @Composable
@@ -177,6 +182,112 @@ fun FormBiodata(modifier: Modifier = Modifier) {
                             shape = RoundedCornerShape(16.dp)
                         )
                     }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // --- Section Skill ---
+                    Text(
+                        text = stringResource(id = R.string.title_pilih_skill),
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colorResource(id = R.color.black),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        // Checkbox Android
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(
+                                checked = isAndroidChecked,
+                                onCheckedChange = { isAndroidChecked = it }
+                            )
+                            Text(
+                                text = stringResource(id = R.string.skill_android),
+                                fontSize = 13.sp
+                            )
+                        }
+
+                        // Checkbox UI/UX
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(
+                                checked = isUiUxChecked,
+                                onCheckedChange = { isUiUxChecked = it }
+                            )
+                            Text(
+                                text = stringResource(id = R.string.skill_uiux),
+                                fontSize = 13.sp
+                            )
+                        }
+
+                        // Checkbox Web
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(
+                                checked = isWebChecked,
+                                onCheckedChange = { isWebChecked = it }
+                            )
+                            Text(
+                                text = stringResource(id = R.string.skill_web),
+                                fontSize = 13.sp
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(28.dp))
+
+                    // --- Tombol PROCEED dengan Fitur Snackbar 5 Detik ---
+                    Button(
+                        onClick = {
+                            // Mengumpulkan skill yang dipilih
+                            val selectedSkillsList = mutableListOf<String>()
+                            if (isAndroidChecked) selectedSkillsList.add(androidSkill)
+                            if (isUiUxChecked) selectedSkillsList.add(uiuxSkill)
+                            if (isWebChecked) selectedSkillsList.add(webSkill)
+
+                            val skillText = if (selectedSkillsList.isNotEmpty()) {
+                                selectedSkillsList.joinToString(", ")
+                            } else {
+                                emptyDash
+                            }
+
+                            val summaryMessage = String.format(
+                                previewFormat,
+                                namaDepan.ifEmpty { emptyDash },
+                                namaBelakang.ifEmpty { emptyDash },
+                                email.ifEmpty { emptyDash },
+                                tglLahir.ifEmpty { emptyDash },
+                                experience.ifEmpty { emptyDash },
+                                skillText
+                            )
+
+                            // Tampilkan Snackbar selama tepat 5 detik
+                            coroutineScope.launch {
+                                val snackbarJob = launch {
+                                    snackbarHostState.showSnackbar(message = summaryMessage)
+                                }
+                                delay(5000) // 5 Detik
+                                snackbarJob.cancel()
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorResource(id = R.color.btn_proceed_bg)
+                        )
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.btn_proceed),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(id = R.color.btn_proceed_text)
+                        )
                 }
             }
         }
