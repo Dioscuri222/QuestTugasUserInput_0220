@@ -1,8 +1,10 @@
 package com.example.useinput
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -104,6 +108,75 @@ fun FormBiodata(modifier: Modifier = Modifier) {
                         fontSize = 13.sp,
                         color = colorResource(id = R.color.text_subtitle_gray)
                     )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // --- Baris 1: Nama Depan & Nama Belakang ---
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = namaDepan,
+                            onValueChange = { namaDepan = it },
+                            label = { Text(text = stringResource(id = R.string.label_nama_depan)) },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                        OutlinedTextField(
+                            value = namaBelakang,
+                            onValueChange = { namaBelakang = it },
+                            label = { Text(text = stringResource(id = R.string.label_nama_belakang)) },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // --- Baris 2: Email ---
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = { email = it },
+                        label = { Text(text = stringResource(id = R.string.label_email)) },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // --- Baris 3: Tgl Lahir & Experience ---
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = tglLahir,
+                            onValueChange = { tglLahir = it },
+                            label = { Text(text = stringResource(id = R.string.label_tgl_lahir)) },
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.DateRange,
+                                    contentDescription = stringResource(id = R.string.desc_icon_calendar)
+                                )
+                            },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                        OutlinedTextField(
+                            value = experience,
+                            onValueChange = { experience = it },
+                            label = { Text(text = stringResource(id = R.string.label_experience)) },
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowDropDown,
+                                    contentDescription = stringResource(id = R.string.desc_icon_dropdown)
+                                )
+                            },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                    }
                 }
             }
         }
