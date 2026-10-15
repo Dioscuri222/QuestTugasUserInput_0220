@@ -1,8 +1,10 @@
 package com.example.useinput
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import java.lang.reflect.Modifier
 
 @Composable
@@ -17,4 +19,8 @@ fun FormBiodata(modifier: Modifier = Modifier){
     var isAndroidChecked by remember { mutableStateOf(false) }
     var isUiUxChecked by remember { mutableStateOf(false) }
     var isWebChecked by remember { mutableStateOf(false) }
+
+    // SNACKBAR STATE & COROUTINE
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 }
